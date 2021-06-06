@@ -9,7 +9,7 @@ export default {
   head: {
     title: 'ygo-life-counter2',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'ja'
     },
     meta: [
       { charset: 'utf-8' },
@@ -17,6 +17,8 @@ export default {
       { hid: 'description', name: 'description', content: '' }
     ],
     link: [
+      { rel: 'icon', type: 'image/png', href: '/favicon/android-icon-192x192.png' },
+      { rel: 'apple-touch-icon', type: 'image/png', href: '/favicon/apple-icon-180x180.png' },
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },

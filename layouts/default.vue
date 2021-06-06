@@ -1,6 +1,13 @@
 <template>
   <div>
-    <Nuxt />
+    <!-- サイトヘッダー -->
+    <div class="site-header">
+      <Navbar />
+    </div>
+
+    <div class="site-content">
+      <Nuxt />
+    </div>
   </div>
 </template>
 

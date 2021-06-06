@@ -24,7 +24,7 @@
 
             <div class="col-2 text-center">
               <!-- リセットボタン -->
-              <button @click="resetLifePoints" class="btn btn-dark"><i class="bi bi-arrow-clockwise"></i></button>
+              <button @click="resetLifePoints" class="btn btn-dark"><font-awesome-icon :icon="['fas', 'sync-alt']" /></button>
               <!-- <button >←</button> -->
             </div>
 
@@ -40,21 +40,21 @@
           </div>
 
           <!-- 増減ボタン -->
-          <div class="row mb-2 gx-2">
+          <div class="row mb-4 gx-2">
             <div class="col-2 text-center">
-              <button class="btn btn-lg btn-danger" @click="changeLifePoint(1, '+')">+</button>
+              <button class="btn btn-block btn-danger" @click="changeLifePoint(1, '+')">+</button>
             </div>
             <div class="col-2 text-center">
-              <button class="btn btn-lg btn-danger" @click="changeLifePoint(1, '-')">-</button>
+              <button class="btn btn-block btn-danger" @click="changeLifePoint(1, '-')">-</button>
             </div>
             <div class="col-4">
               <input type="text" class="form-control text-center" inputmode="numeric" v-model.number="inputLifePoint">
             </div>
             <div class="col-2 text-center">
-              <button class="btn btn-lg btn-primary" @click="changeLifePoint(2, '-')">-</button>
+              <button class="btn btn-block btn-primary" @click="changeLifePoint(2, '-')">-</button>
             </div>
             <div class="col-2 text-center">
-              <button class="btn btn-lg btn-primary" @click="changeLifePoint(2, '+')">+</button>
+              <button class="btn btn-block btn-primary" @click="changeLifePoint(2, '+')">+</button>
             </div>
           </div>
 
@@ -65,7 +65,7 @@
                 <div class="row">
                   <div  v-for="number in numbers.slice(0, 3)" :key="number" class="col-4 d-grid gap-2">
                     <button
-                      class="btn btn-lg btn-secondary mb-2"
+                      class="btn btn-block btn-secondary mb-2"
                       @click="inputNumber(number)"
                     >{{ number }}</button>
                   </div>
@@ -73,7 +73,7 @@
                 <div class="row">
                   <div v-for="number in numbers.slice(3, 6)" :key="number" class="col-4 d-grid gap-2">
                     <button
-                      class="btn btn-lg btn-secondary mb-2"
+                      class="btn btn-block btn-secondary mb-2"
                       @click="inputNumber(number)"
                     >{{ number }}</button>
                   </div>
@@ -81,7 +81,7 @@
                 <div class="row">
                   <div v-for="number in numbers.slice(6, 9)" :key="number" class="col-4 d-grid gap-2">
                     <button
-                      class="btn btn-lg btn-secondary mb-2"
+                      class="btn btn-block btn-secondary mb-2"
                       @click="inputNumber(number)"
                     >{{ number }}</button>
                   </div>
@@ -89,7 +89,7 @@
                 <div class="row">
                   <div v-for="number in numbers.slice(9, 13)" :key="number" class="col-4 d-grid gap-2">
                     <button
-                      class="btn btn-lg btn-secondary mb-2"
+                      class="btn btn-block btn-secondary mb-2"
                       @click="inputNumber(number)"
                     >{{ number }}</button>
                   </div>

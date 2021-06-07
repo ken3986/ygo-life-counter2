@@ -18,14 +18,14 @@
                 <!-- プレイヤー名 -->
                 <input type="text" class="form-control mb-2" v-model="player(1).name">
                 <!-- ライフポイント -->
-                <input type="text" :value="player(1).lifePoint" class="form-control text-center text-danger">
+                <input type="text" :value="player(1).lifePoint" class="form-control text-center text-danger" inputmode="numeric">
               </div>
             </div>
 
             <div class="col-2 text-center">
               <!-- リセットボタン -->
               <button @click="resetLifePoints" class="btn btn-dark"><font-awesome-icon :icon="['fas', 'sync-alt']" /></button>
-              <!-- <button >←</button> -->
+              <button @click="undoLogs" class="btn btn-light">←</button>
             </div>
 
             <div class="col-5">
@@ -34,25 +34,31 @@
                 <!-- プレイヤー名 -->
                 <input type="text" class="form-control mb-2" v-model="player(2).name">
                 <!-- ライフポイント -->
-                <input type="text" :value="player(2).lifePoint" class="form-control text-center text-primary">
+                <input type="text" :value="player(2).lifePoint" class="form-control text-center text-primary" inputmode="numeric">
               </div>
             </div>
           </div>
 
           <!-- 増減ボタン -->
           <div class="row mb-4 gx-2">
+            <!-- プレイヤー1・プラス -->
             <div class="col-2 text-center">
               <button class="btn btn-block btn-danger" @click="changeLifePoint(1, '+')">+</button>
             </div>
+            <!-- プレイヤー1・マイナス -->
             <div class="col-2 text-center">
               <button class="btn btn-block btn-danger" @click="changeLifePoint(1, '-')">-</button>
             </div>
+            <!-- 増減値表示 -->
             <div class="col-4">
-              <input type="text" class="form-control text-center" inputmode="numeric" v-model.number="inputLifePoint">
+              <p class="text-center" @click="inputLifePoint = 0">{{ inputLifePoint }}</p>
+              <!-- <input type="text" class="form-control text-center" inputmode="numeric" v-model.number="inputLifePoint"> -->
             </div>
+            <!-- プレイヤー2・マイナス -->
             <div class="col-2 text-center">
               <button class="btn btn-block btn-primary" @click="changeLifePoint(2, '-')">-</button>
             </div>
+            <!-- プレイヤー2・プラス -->
             <div class="col-2 text-center">
               <button class="btn btn-block btn-primary" @click="changeLifePoint(2, '+')">+</button>
             </div>
@@ -98,25 +104,34 @@
               <div class="col-6 col-lg-3 order-1 order-lg-0">
                 <!-- log -->
                 <ul class="list-group">
-                  <!-- <li class="list-group-item" v-for="log in player(1).logs">
-                    {{ log.previousLifePoint }}
-                    {{ log.sign }}{{ log.changeLifePoint }} {{ log.currentLifePoint }}
-                  </li> -->
+                  <li class="list-group-item" v-for="log in playerLog(1)" :key="log.id">
+                    {{ log.currentLifePoint }}
+                    {{ log.operator }}{{ log.changeLifePoint }}
+                  </li>
                 </ul>
               </div>
               <div class="col-6 col-lg-3 order-2 order-lg-2">
                 <!-- log -->
                 <ul class="list-group">
-                  <!-- <li class="list-group-item" v-for="log in player(2).logs">
-                    {{ log.previousLifePoint }}
-                    {{ log.sign }}{{ log.changeLifePoint }} {{ log.currentLifePoint }}
-                  </li> -->
+                  <li class="list-group-item" v-for="log in playerLog(2)" :key="log.id">
+                    {{ log.currentLifePoint }}
+                    {{ log.operator }}{{ log.changeLifePoint }}
+                  </li>
                 </ul>
               </div>
             </div>
           </div> <!-- numbers -->
         </div> <!-- .container -->
       </section>
+
+      <!-- デバック用 -->
+      <!-- <section>
+        <div class="container">
+          <h2>デバックエリア</h2>
+          {{ logs }}
+          <p>{{ playerLog(1) }}</p>
+        </div>
+      </section> -->
     </div> <!-- .page-content -->
   </div> <!-- .pge-wrapper -->
 </template>
@@ -164,6 +179,7 @@ export default {
       ],
 
       logs: [],
+      currentLogId: 0,
     }
   }, /* data */
 
@@ -174,6 +190,13 @@ export default {
         return player
       }
     },
+
+    playerLog () {
+      return function (playerId) {
+        const playerLog = this.logs.filter(log => log.playerId === playerId)
+        return playerLog
+      }
+    }
   }, /* computed */
 
   methods: {
@@ -187,33 +210,36 @@ export default {
     resetLifePoints () {
       this.players.forEach((player) => {
         player.lifePoint = 8000
-        player.logs = []
+        this.logs =[]
       })
     },
 
     // ライフポイントの増減
-    changeLifePoint (playerId, sign) {
+    changeLifePoint (playerId, operator) {
       const player = this.getPlayer(playerId)
       const previousLifePoint = player.lifePoint
       const inputLifePoint = parseInt(this.inputLifePoint)
 
       if (inputLifePoint !== 0) {
-        if (sign === '+') {
+        if (operator === '+') {
           player.lifePoint = player.lifePoint + inputLifePoint
         }
-        else if (sign === '-') {
+        else if (operator === '-') {
           player.lifePoint = player.lifePoint - inputLifePoint
-          if (player.lifePoint <= 0) {
-            player.lifePoint = 0
-          }
+          // if (player.lifePoint <= 0) {
+          //   player.lifePoint = 0
+          // }
         }
 
-        player.logs.push({
+        this.logs.push({
+          id: this.currentLogId,
+          playerId: playerId,
           previousLifePoint: previousLifePoint,
           changeLifePoint: inputLifePoint,
-          sign: sign,
+          operator: operator,
           currentLifePoint: player.lifePoint,
         })
+        this.currentLogId++
       }
 
       this.inputLifePoint = 0
@@ -225,6 +251,24 @@ export default {
         this.inputLifePoint = ''
       }
       this.inputLifePoint = this.inputLifePoint + number
+    },
+
+    // 1つ戻す
+    undoLogs () {
+      if (this.logs.length) {
+        let targetLog = {}
+        targetLog = this.logs[this.logs.length - 1]
+
+        const player = this.getPlayer(targetLog.playerId)
+
+        if (targetLog.operator === '+') {
+          player.lifePoint = player.lifePoint - targetLog.changeLifePoint
+        } else if (targetLog.operator === '-') {
+          player.lifePoint = player.lifePoint + targetLog.changeLifePoint
+        }
+
+        this.logs.pop()
+      }
     }
   }, /* methods */
 
